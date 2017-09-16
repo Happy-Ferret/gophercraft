@@ -3,7 +3,6 @@ package packet
 import (
 	"bytes"
 	"encoding/binary"
-	"log"
 	"math"
 )
 
@@ -38,12 +37,9 @@ func UnmarshalRealmList_S(input []byte) (*RealmList_S, error) {
 	rls := &RealmList_S{}
 	rls.Cmd = AuthType(input[0])
 	size := binary.LittleEndian.Uint16(input[1:3])
-	request := binary.LittleEndian.Uint32(input[3:7])
-	log.Println("Request: ", request)
-	realmsCount := binary.LittleEndian.Uint16(input[7:9])
-	log.Println("Realmscount", realmsCount)
+	// request := binary.LittleEndian.Uint32(input[3:7])
+	// realmsCount := binary.LittleEndian.Uint16(input[7:9])
 	o := 9
-	// for i := 0; i < int(lists); i++ {
 	for {
 		rlst := RealmListing{}
 		rlst.Type = input[o]
@@ -72,7 +68,6 @@ func UnmarshalRealmList_S(input []byte) (*RealmList_S, error) {
 		}
 		o++
 		rlst.Address = ip.String()
-		log.Println(rlst.Address)
 		pop := input[o : o+4]
 		u := binary.LittleEndian.Uint32(pop)
 		rlst.Population = math.Float32frombits(u)
