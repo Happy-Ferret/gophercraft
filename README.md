@@ -8,7 +8,9 @@ Gophercraft is in currently development: expect a lack of features and expect th
 
 Remember, contributions are always welcome. If you've added additional functionality, why not submit a pull request?
 
-## Goals: 
+## Goals
 
 - Auth protocol client ✓
 - Worldserver protocol client
+- Authserver
+- Scriptable worldserver
