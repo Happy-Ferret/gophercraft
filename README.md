@@ -13,6 +13,7 @@ Remember, contributions are always welcome. If you've added additional functiona
 - Auth protocol client ✓
 - Authserver ✓
 - Worldserver protocol client
+- HTTP JSON API for facilitating registration and serving up world data
 - Scriptable worldserver
 
 ## Authserver
