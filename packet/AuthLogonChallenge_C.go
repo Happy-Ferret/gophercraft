@@ -60,6 +60,9 @@ func (alcc *AuthLogonChallenge_C) Version() string {
 }
 
 func UnmarshalAuthLogonChallenge_C(data []byte) (*AuthLogonChallenge_C, error) {
+	if len(data) < 34 {
+		return nil, fmt.Errorf("Packet too small")
+	}
 	ac := &AuthLogonChallenge_C{}
 	ac.Cmd = AuthType(data[0])
 	ac.Error = ErrorType(data[1])
@@ -75,8 +78,11 @@ func UnmarshalAuthLogonChallenge_C(data []byte) (*AuthLogonChallenge_C, error) {
 	ac.TimezoneBias = binary.LittleEndian.Uint32(data[25:29])
 	ac.IP = binary.LittleEndian.Uint32(data[29:33])
 	ac.ILen = data[33]
-	ac.I = data[34 : 34+int(ac.ILen)]
-	// TODO: bounds check
+	o := 34 + int(ac.ILen)
+	if len(data) < o {
+		return nil, fmt.Errorf("Packet too small")
+	}
+	ac.I = data[34:o]
 	return ac, nil
 }
 

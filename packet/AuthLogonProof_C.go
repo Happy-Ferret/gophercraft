@@ -1,6 +1,9 @@
 package packet
 
-import "bytes"
+import (
+	"bytes"
+	"fmt"
+)
 
 type AuthLogonProof_C struct {
 	Cmd          AuthType
@@ -26,6 +29,9 @@ func (alpc *AuthLogonProof_C) Encode() []byte {
 }
 
 func UnmarshalAuthLogonProof_C(input []byte) (*AuthLogonProof_C, error) {
+	if len(input) < 74 {
+		return nil, fmt.Errorf("Packet too small")
+	}
 	alpc := &AuthLogonProof_C{}
 	alpc.Cmd = AuthType(input[0])
 	alpc.A = input[1:33]

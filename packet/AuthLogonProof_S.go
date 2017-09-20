@@ -3,6 +3,7 @@ package packet
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 )
 
 type AuthLogonProof_S struct {
@@ -32,6 +33,9 @@ func (alps *AuthLogonProof_S) Encode() []byte {
 }
 
 func UnmarshalAuthLogonProof_S(input []byte) (*AuthLogonProof_S, error) {
+	if len(input) < 32 {
+		return nil, fmt.Errorf("Packet too small")
+	}
 	alps := &AuthLogonProof_S{}
 	alps.Cmd = AuthType(input[0])
 	alps.Error = ErrorType(input[1])

@@ -1,6 +1,9 @@
 package packet
 
-import "bytes"
+import (
+	"bytes"
+	"fmt"
+)
 
 type AuthLogonChallenge_S struct {
 	Cmd   AuthType
@@ -40,6 +43,9 @@ func (acls *AuthLogonChallenge_S) Encode() []byte {
 }
 
 func UnmarshalAuthLogonChallenge_S(input []byte) (*AuthLogonChallenge_S, error) {
+	if len(input) < 86 {
+		return nil, fmt.Errorf("Packet too small")
+	}
 	alcs := &AuthLogonChallenge_S{}
 	alcs.Cmd = AuthType(input[0])
 	alcs.Error = ErrorType(input[2])
