@@ -15,6 +15,10 @@ func reverseBuffer(input []byte) []byte {
 	return buf
 }
 
+func ReverseBuffer(input []byte) []byte {
+	return reverseBuffer(input)
+}
+
 func packetString(input string) []byte {
 	data := []byte(input)
 	data = bytes.Replace(data, []byte("."), []byte{0}, -1)

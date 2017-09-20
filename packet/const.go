@@ -62,6 +62,10 @@ const (
 	XFER_ACCEPT              AuthType = 0x32
 	XFER_RESUME              AuthType = 0x33
 	XFER_CANCEL              AuthType = 0x34
+
+	REALM_GREEN  uint8 = 0
+	REALM_YELLOW uint8 = 1
+	REALM_RED    uint8 = 2
 )
 
 type AuthType uint8

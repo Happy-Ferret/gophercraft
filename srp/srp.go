@@ -20,7 +20,12 @@ func hash(input ...[]byte) []byte {
 	return bt[:]
 }
 
-func SRPCalculate(username, password string, _B, n, salt []byte) ([]byte, []byte) {
+func SRPCalculate(username, password string, _B, n, salt []byte) (*BigNum, []byte, []byte, []byte) {
+	auth := hash(Credentials(username, password))
+	return HashCalculate(username, auth, _B, n, salt)
+}
+
+func HashCalculate(username string, auth, _B, n, salt []byte) (*BigNum, []byte, []byte, []byte) {
 	g := BigNumFromInt(7)
 	k := BigNumFromInt(3)
 
@@ -32,11 +37,9 @@ func SRPCalculate(username, password string, _B, n, salt []byte) ([]byte, []byte
 
 	B := BigNumFromArray(_B)
 
-	auth := hash(Credentials(username, password))
-
 	x := BigNumFromArray(hash(s.ToArray(), auth))
 
-	// v := g.ModExp(x, N)
+	v := g.ModExp(x, N)
 
 	uh := hash(A.ToArray(), B.ToArray())
 	u := BigNumFromArray(uh)
@@ -83,5 +86,69 @@ func SRPCalculate(username, password string, _B, n, salt []byte) ([]byte, []byte
 		K,
 	)
 
-	return A.ToArray(), M1
+	return v, K, A.ToArray(), M1
+}
+
+func HashCredentials(username, password string) []byte {
+	return hash(Credentials(username, password))
+}
+
+// ServerCalcVS
+func ServerCalcVSX(hsh []byte, N *BigNum) (*BigNum, *BigNum, *BigNum) {
+	s := BigNumFromRand(32)
+
+	x := BigNumFromArray(hash(s.ToArray(), hsh))
+	v := BigNumFromInt(7).ModExp(x, N)
+
+	return v, s, x
+}
+
+func ServerLogonProof(username string, A, M1, b, B, s, N, v *BigNum) ([]byte, bool, []byte) {
+	g := BigNumFromInt(7)
+
+	u := BigNumFromArray(hash(A.ToArray(), B.ToArray()))
+	_S := (A.Multiply(v.ModExp(u, N))).ModExp(b, N)
+
+	S := _S.ToArray()
+
+	S1, S2 := make([]byte, 16), make([]byte, 16)
+
+	for i := 0; i < 16; i++ {
+		S1[i] = S[i*2]
+		S2[i] = S[i*2+1]
+	}
+
+	S1h := hash(S1)
+	S2h := hash(S2)
+
+	vK := make([]byte, 40)
+
+	for i := 0; i < 20; i++ {
+		vK[i*2] = S1h[i]
+		vK[i*2+1] = S2h[i]
+	}
+
+	K := BigNumFromArray(vK)
+
+	Nh := hash(N.ToArray())
+	gh := hash(g.ToArray())
+
+	for i := 0; i < 20; i++ {
+		Nh[i] ^= gh[i]
+	}
+
+	t3 := BigNumFromArray(Nh)
+	t4 := hash([]byte(strings.ToUpper(username)))
+
+	final := hash(
+		t3.ToArray(),
+		t4,
+		s.ToArray(),
+		A.ToArray(),
+		B.ToArray(),
+		K.ToArray(),
+	)
+
+	M3 := hash(A.ToArray(), final, K.ToArray())
+	return final, bytes.Equal(final, M1.ToArray()), M3
 }

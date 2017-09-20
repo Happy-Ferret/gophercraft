@@ -16,7 +16,8 @@ type AuthLogonProof_S struct {
 
 func (alps *AuthLogonProof_S) Encode() []byte {
 	buf := new(bytes.Buffer)
-	buf.Write([]byte{uint8(alps.Cmd), uint8(alps.Error)})
+	buf.WriteByte(uint8(alps.Cmd))
+	buf.WriteByte(uint8(alps.Error))
 	buf.Write(alps.M2)
 	acf := make([]byte, 4)
 	binary.LittleEndian.PutUint32(acf, alps.AccountFlags)
