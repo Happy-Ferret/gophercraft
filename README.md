@@ -8,13 +8,14 @@ Gophercraft is currently in development: expect a lack of features and expect th
 
 Remember, contributions are always welcome. If you've added additional functionality, why not submit a pull request?
 
+**Alert! I've reached an impasse with this code. I can't seem to implement code that will make the WoW 3.3.5a client log into the world, past the character selection menu. If you know how to do this, please contribute!!**
+
 ## Goals
 
-- Authserver ✓
+- Authentication and realm list server ✓
 - Authentication protocol client ✓
 - HTTP JSON API for facilitating registration and serving up world data ✓
 - Rich web application utilizing the Gophercraft JSON API, browsing players, stats, items and guilds
-- Easy-to-use admin interface
 - Scriptable worldserver 
 - Support for Windows and Mac OS X
 - Game protocol client
