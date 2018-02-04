@@ -3,10 +3,11 @@ package authserver
 import (
 	"crypto/rand"
 	"encoding/hex"
-	"log"
 	"math/big"
 	"net"
 	"time"
+
+	log "github.com/superp00t/gophercraft/gcore/glogger"
 
 	"github.com/superp00t/gophercraft/packet"
 	"github.com/superp00t/gophercraft/srp"
@@ -19,9 +20,11 @@ type Account struct {
 
 type Config struct {
 	Listen string
+	Name   string
 
 	GetAccount func(user string) *Account
 	ListRealms func(user string) []packet.RealmListing
+	StoreKey   func(user string, K []byte)
 }
 
 func (cfg *Config) Handle(c net.Conn) {
@@ -47,6 +50,7 @@ func (cfg *Config) Handle(c net.Conn) {
 
 		time.Sleep(1 * time.Second)
 		c.Close()
+		return
 	}
 
 	acc := cfg.GetAccount(string(alc.I))
@@ -91,7 +95,7 @@ func (cfg *Config) Handle(c net.Conn) {
 		return
 	}
 
-	_, valid, M3 := srp.ServerLogonProof(acc.Username,
+	K, valid, M3 := srp.ServerLogonProof(acc.Username,
 		srp.BigNumFromArray(alpc.A),
 		srp.BigNumFromArray(alpc.M1),
 		b,
@@ -113,16 +117,15 @@ func (cfg *Config) Handle(c net.Conn) {
 		return
 	}
 
-	log.Println(acc.Username, "successfully authenticated")
+	cfg.StoreKey(acc.Username, K)
 
-	// flags := 0x00800000
-	var flags uint32 = 8388608
+	log.Println(acc.Username, "successfully authenticated")
 
 	proof := &packet.AuthLogonProof_S{
 		Cmd:          packet.AUTH_LOGON_PROOF,
 		Error:        packet.WOW_SUCCESS,
 		M2:           M3,
-		AccountFlags: flags,
+		AccountFlags: 0x00800000,
 		SurveyID:     0,
 		Unk3:         0,
 	}

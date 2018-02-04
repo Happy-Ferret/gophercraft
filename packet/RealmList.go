@@ -22,7 +22,6 @@ type RealmList_S struct {
 
 type RealmListing struct {
 	Type       uint8 //
-	Color      uint8
 	Locked     bool
 	Flags      uint8
 	Name       string
@@ -39,12 +38,12 @@ func (rlst *RealmList_S) Encode() []byte {
 
 	for _, v := range rlst.Realms {
 		listBuffer.WriteByte(v.Type)
-		listBuffer.WriteByte(v.Color)
 		var lck uint8
 		if v.Locked {
 			lck++
 		}
 		listBuffer.WriteByte(lck)
+		listBuffer.WriteByte(v.Flags)
 		listBuffer.Write(append([]byte(v.Name), 0))
 		listBuffer.Write(append([]byte(v.Address), 0))
 		pop := make([]byte, 4)
@@ -104,9 +103,9 @@ func UnmarshalRealmList_S(input []byte) (*RealmList_S, error) {
 		rlst := RealmListing{}
 		rlst.Type = input[o]
 		o++
-		rlst.Color = input[o]
-		o++
 		rlst.Locked = input[o] == 1
+		o++
+		rlst.Flags = input[o]
 		o++
 		name := new(bytes.Buffer)
 		for {

@@ -1,5 +1,7 @@
 package arc4
 
+// Warning: this package is ONLY suitable for Gophercraft.
+// Do not use it in any other case: it provides no actual security.
 type Cipher struct {
 	S    []byte
 	i, j byte

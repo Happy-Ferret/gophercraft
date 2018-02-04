@@ -1,0 +1,23 @@
+{
+    "name": "gophercraft-core-ui",
+    "version": "1.0.0",
+    "description": "Gophercraft Core GUI",
+    "author": "Joshua Achorn",
+    "license": "GPLv3",
+    "devDependencies": {
+        "@types/react": "latest",
+        "@types/react-dom": "latest",
+        "ts-loader": "latest",
+        "typescript": "latest",
+        "webpack": "latest",
+        "react": "latest",
+        "react-dom": "latest",
+        "react-router-dom": "latest",
+        "material-ui": "latest",
+        "tsutils": "git+https://git.ikrypto.club/superp00t/tsutils.git"
+    },
+    "scripts": {
+        "setup": "npm install",
+        "build": "webpack"
+    }
+}

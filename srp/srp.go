@@ -3,6 +3,7 @@ package srp
 import (
 	"bytes"
 	"crypto/sha1"
+	"fmt"
 	"strings"
 )
 
@@ -49,7 +50,9 @@ func HashCalculate(username string, auth, _B, n, salt []byte) (*BigNum, []byte, 
 
 	_S := B.Subtract(kgx).ModExp(aux, N)
 	S := _S.ToArray()
-
+	if len(S) != 32 {
+		panic(fmt.Errorf("Strange length of S: %d", len(S)))
+	}
 	S1, S2 := make([]byte, 16), make([]byte, 16)
 
 	for i := 0; i < 16; i++ {
@@ -107,6 +110,10 @@ func ServerLogonProof(username string, A, M1, b, B, s, N, v *BigNum) ([]byte, bo
 	g := BigNumFromInt(7)
 
 	u := BigNumFromArray(hash(A.ToArray(), B.ToArray()))
+	if A.Mod(N).Equals(BigNumFromInt(0)) {
+		return nil, false, nil
+	}
+
 	_S := (A.Multiply(v.ModExp(u, N))).ModExp(b, N)
 
 	S := _S.ToArray()
@@ -114,6 +121,9 @@ func ServerLogonProof(username string, A, M1, b, B, s, N, v *BigNum) ([]byte, bo
 	S1, S2 := make([]byte, 16), make([]byte, 16)
 
 	for i := 0; i < 16; i++ {
+		if len(S) < 32 {
+			return nil, false, nil
+		}
 		S1[i] = S[i*2]
 		S2[i] = S[i*2+1]
 	}
@@ -150,5 +160,5 @@ func ServerLogonProof(username string, A, M1, b, B, s, N, v *BigNum) ([]byte, bo
 	)
 
 	M3 := hash(A.ToArray(), final, K.ToArray())
-	return final, bytes.Equal(final, M1.ToArray()), M3
+	return vK, bytes.Equal(final, M1.ToArray()), M3
 }

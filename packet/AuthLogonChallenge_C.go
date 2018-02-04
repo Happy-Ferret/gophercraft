@@ -98,7 +98,7 @@ func LogonChallengePacket_C(username string) []byte {
 		Version3:     5,
 		Build:        12340,
 		Platform:     packetString(".x86"),
-		OS:           packetString(".OSX"),
+		OS:           packetString(".Win"),
 		Country:      packetString("enGB"),
 		TimezoneBias: 4294966996,
 		IP:           16777343,
