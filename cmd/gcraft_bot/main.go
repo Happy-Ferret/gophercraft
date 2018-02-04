@@ -13,18 +13,12 @@ var (
 	username   = pflag.StringP("username", "u", "username", "username")
 	pass       = pflag.StringP("pass", "p", "password", "password")
 	authServer = pflag.StringP("authserver", "a", "localhost:3724", "authserver")
-	realm      = pflag.StringP("realm", "r", "Icecrown", "realm")
+	realm      = pflag.StringP("realm", "r", "demo", "realm")
 	player     = pflag.StringP("player", "y", "wew", "playername")
 )
 
 func main() {
 	pflag.Parse()
-	/*	c, err := client.AuthConnect(&client.Config{
-			Username:   "fuck",
-			Password:   "puck",
-			AuthServer: "localhost:3724",
-		})
-	*/
 	c, err := client.AuthConnect(&client.Config{
 		Username:   *username,
 		Password:   *pass,

@@ -45,5 +45,5 @@ Go also provides many libraries that the protocol requires, like `net`, `crypto/
 For helping me to understand the protocol, I would like to thank these projects:
 
 - [Wowser, a browser-based WoW client](https://github.com/wowserhq/wowser)
-- [mClient, a WoW client written in C#](mClient)
+- [mClient, a WoW client written in C#](https://github.com/justMaku/mClient)
 - [TrinityCore, a C++ MMORPG server](https://github.com/TrinityCore/TrinityCore/)
