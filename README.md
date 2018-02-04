@@ -10,7 +10,29 @@ Remember, contributions are always welcome. If you've added additional functiona
 
 **Alert! I've reached an impasse with this code. I can't seem to implement code that will make the WoW 3.3.5a client log into the world, past the character selection menu. If you know how to do this, please contribute!!**
 
+
+## Server setup/installation
+
+Since this software is still in its infancy, no game data is necessary to launch.
+
+```bash
+# install packages
+sudo apt-get install golang mysql-server
+
+# create database
+echo "CREATE DATABASE gcraft_core;" | mysql -u root -p 
+
+# install gophercraft commands
+go get -u -v github.com/superp00t/gophercraft/cmd/...
+
+# launch authserver (do this in background) 
+gcraft_core_auth -s root:password@/gcraft_core?charset=utf8 -l 0.0.0.0:3724
+
+# launch worldserver                                            publicly visible     listening address
+#                                                               address
+gcraft_core_world -s root:password@/gcraft_core?charset=utf8 -i 0.0.0.0:8085        -l 0.0.0.0:8085
 ## Goals
+```
 
 - Authentication and realm list server ✓
 - Authentication protocol client ✓
@@ -29,7 +51,7 @@ Go uses a simpler syntax than C++, making code reading easier.
 
 Unlike C++, Go provides memory safety at the language level, making memory-based RCE exploits impossible.
 
-Go also provides many libraries that the protocol requires, like `net`, `crypto/sha1`, `crypto/hmac` and `compress/zlib` as part of the Go Standard Library, eliminating the need for arduous dependency management.
+Go has nicer package management. It also provides many libraries that the protocol requires, like `net`, `crypto/sha1`, `crypto/hmac` and `compress/zlib` as part of the Go Standard Library, eliminating the need to add external dependencies.
 
 ## Programs
 
