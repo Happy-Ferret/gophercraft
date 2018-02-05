@@ -33,7 +33,7 @@ gcraft_core_auth -s root:password@/gcraft_core?charset=utf8 -l 0.0.0.0:3724
 gcraft_core_world -s root:password@/gcraft_core?charset=utf8 -i 0.0.0.0:8085        -l 0.0.0.0:8085
 ```
 
-To log in, point your browser to http://localhost:8086 and fill out the registration form.
+To register, point your browser to http://localhost:8086 and fill out the registration form.
 
 ## Goals
 
