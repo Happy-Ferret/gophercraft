@@ -31,8 +31,11 @@ gcraft_core_auth -s root:password@/gcraft_core?charset=utf8 -l 0.0.0.0:3724
 # launch worldserver                                            publicly visible     listening address
 #                                                               address
 gcraft_core_world -s root:password@/gcraft_core?charset=utf8 -i 0.0.0.0:8085        -l 0.0.0.0:8085
-## Goals
 ```
+
+To log in, point your browser to http://localhost:8086 and fill out the registration form.
+
+## Goals
 
 - Authentication and realm list server ✓
 - Authentication protocol client ✓

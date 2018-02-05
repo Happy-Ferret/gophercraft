@@ -13,10 +13,18 @@ import (
 
 func (s *Session) GetNewPlayerGUID() guid.GUID {
 	var i []gcore.Character
-	s.WS.DB.OrderBy("g_u_i_d").Asc().Limit(1).Find(&i)
+
+	ssh := s.WS.DB.Desc("g_u_i_d").Limit(1, 0)
+	err := ssh.Find(&i)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	var g guid.GUID = 0
 	if len(i) != 0 {
 		g = i[0].GUID + 1
+	} else {
+		g = 1
 	}
 
 	return g

@@ -15,9 +15,10 @@ var (
 	realmName = pflag.StringP("realm_name", "r", "demo", "name of the realm server. MUST be unique. Synced with database.")
 	ipAddr    = pflag.StringP("ip_address", "i", "ip", "public IP of the realm server. Synced with database.")
 	endpoint  = pflag.StringP("endpoint", "e", "http://localhost:8086", "Gophercraft Core HTTP API server")
-	apiKey    = pflag.StringP("api_key", "a", "_proper_", "authentication key for using Gophercraft Core API")
 	driver    = pflag.StringP("driver", "d", "mysql", "the XORM driver to use for the database")
 	source    = pflag.StringP("source", "s", "root:root@/gcraft_core", "the XORM driver to use for the database")
+
+	show = pflag.BoolP("showsql", "q", false, "show SQL queries")
 )
 
 func main() {
@@ -36,5 +37,6 @@ func main() {
 		Source:        *source,
 		PublicAddress: *ipAddr,
 		WardenEnabled: false,
+		ShowSQL:       *show,
 	}))
 }

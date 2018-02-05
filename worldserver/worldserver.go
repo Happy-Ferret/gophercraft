@@ -19,6 +19,7 @@ type Config struct {
 	Source, Driver string
 	PublicAddress  string
 	WardenEnabled  bool
+	ShowSQL        bool
 }
 
 type WorldServer struct {
@@ -38,12 +39,16 @@ func Start(opt *Config) error {
 		return err
 	}
 
+	if opt.ShowSQL {
+		ws.DB.ShowSQL(true)
+	}
+
 	// TODO: replace with pure DB solution
 	go func() {
 		c := gcore.Core{ws.DB}
 
 		for {
-			c.PublishRealmInfo(ws.Opts.RealmName, ws.Opts.PublicAddress, gcore.PVPServer)
+			c.PublishRealmInfo(ws.Opts.PublicAddress, ws.Opts.RealmName, gcore.PVPServer)
 			time.Sleep(9 * time.Second)
 		}
 	}()

@@ -2,10 +2,12 @@ package gcore
 
 import (
 	"fmt"
+	"log"
 	"strings"
 
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/go-xorm/xorm"
 	"github.com/superp00t/gophercraft/authserver"
 	"github.com/superp00t/gophercraft/packet"
@@ -21,20 +23,20 @@ func NewCore(driver, source string) (*Core, error) {
 		return nil, err
 	}
 
-	err = db.Sync2(new(Account))
-	if err != nil {
-		return nil, err
+	strcts := []interface{}{
+		new(Account),
+		new(Realm),
+		new(SessionKey),
+		new(Character),
 	}
 
-	err = db.Sync2(new(Realm))
-	if err != nil {
-		return nil, err
+	for _, v := range strcts {
+		err = db.Sync2(v)
+		if err != nil {
+			return nil, err
+		}
 	}
-	db.Sync2(new(SessionKey))
-	db.Sync2(new(Character))
 
-	var rlms []Realm
-	db.Find(&rlms)
 	core := &Core{DB: db}
 
 	return core, nil
@@ -71,6 +73,7 @@ func (c *Core) ListRealms(user string) []packet.RealmListing {
 	var acc []Account
 	c.DB.Where("username = ?", user).Find(&acc)
 	if len(acc) == 0 {
+		log.Println("No user found!")
 		return nil
 	}
 
@@ -83,17 +86,20 @@ func (c *Core) ListRealms(user string) []packet.RealmListing {
 		pkt.Type = v.Type
 		pkt.Locked = false
 		pkt.Flags = 0x00
-		if v.LastUpdated.Nanosecond() < (time.Now().Add(-12 * time.Second)).Nanosecond() {
+		if (time.Now().UnixNano() - v.LastUpdated.UnixNano()) > (time.Second * 15).Nanoseconds() {
 			pkt.Flags = 0x02
 		}
 		pkt.Name = v.Name
 		pkt.Address = v.Address
-		pkt.Population = 1
-		pkt.Timezone = 0
+		pkt.Population = 2
+		pkt.Timezone = 8
 		pkt.ID = uint8(i)
 		c, _ := c.DB.Where("realm = ?", v.Name).Where("account = ?", acc[0].ID).Count(new(Character))
 		pkt.Characters = uint8(c)
+		rlm = append(rlm, pkt)
 	}
+
+	log.Println(spew.Sdump(rlm))
 
 	return rlm
 }
